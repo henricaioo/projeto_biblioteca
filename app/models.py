@@ -18,44 +18,41 @@ class Cidade(models.Model):
 
     def __str__(self):
         return self.cidade
-    
-class Autor(models.Model):
-    nome = models.CharField(max_length = 80)
-    cidade = models.ForeignKey(Cidade, on_delete = models.CASCADE)
+
+class Pessoa(models.Model):
+    nome = models.CharField(max_length = 255, default = '')
+    cidade = models.ForeignKey(Cidade, on_delete=models.CASCADE)
+    email = models.CharField(max_length = 50, default = '')
+    telefone = models.CharField(max_length = 20, default = '')
 
     class Meta:
-        verbose_name_plural = 'Autores'
+        abstract = True
 
-    def __str__(self):
-        return self.nome
-    
-class Editora(models.Model):
-    nome = models.CharField(max_length = 80)
-    site = models.CharField(max_length = 80)
-    cidade = models.ForeignKey(Cidade, on_delete = models.CASCADE)
+class PessoaFisica(Pessoa):
+    cpf = models.CharField(max_length = 11, default = '')
+    data_nasc = models.DateField(default = "1600-12-01")
 
     class Meta:
-        verbose_name_plural = 'Editoras'
+        abstract = True
 
-    def __str__(self):
-        return self.nome
-    
-class User(models.Model):
-    nome = models.CharField(max_length = 80)
-    cpf = models.CharField(max_length = 11)
-    data_nasc = models.DateField()
-    email = models.CharField(max_length = 50)
-    telefone = models.CharField(max_length = 20)
-    cidade = models.ForeignKey(Cidade, on_delete = models.CASCADE)
+class PessoaJuridica(Pessoa):
+    cnpj = models.CharField(max_length = 14, default = '')
+    data_fund = models.DateField(default = "1600-12-01")
 
     class Meta:
-        verbose_name_plural = 'Usuários'
+        abstract = True
 
-    def __str__(self):
-        return self.nome
+class User(PessoaFisica):
+    pass
+
+class Autor(PessoaFisica):
+    pass
+
+class Editora(PessoaJuridica):
+    site = models.CharField(max_length = 50, default = '')
     
 class Genero(models.Model):
-    nome = models.CharField(max_length = 80)
+    nome = models.CharField(max_length = 80, default = '')
 
     class Meta:
         verbose_name_plural = 'Gêneros'
@@ -81,4 +78,4 @@ class Emprestimo(models.Model):
     dataemprestimo= models.DateField()
     livro = models.ForeignKey(Livro, on_delete = models.CASCADE)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
-    devolucao = models.DateField()
+    devolucao = models.DateField(default = "1600-12-01")
