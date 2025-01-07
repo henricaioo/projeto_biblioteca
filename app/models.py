@@ -27,6 +27,9 @@ class Pessoa(models.Model):
 
     class Meta:
         abstract = True
+        
+    def __str__(self):
+        return self.nome
 
 class PessoaFisica(Pessoa):
     cpf = models.CharField(max_length = 11, default = '')
